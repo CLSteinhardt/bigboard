@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 {% load columns %}
 {% load static %}
-
+{% if user.is_authenticated %}
+{% else %}
+     <meta http-equiv="refresh" content="0; url={% url 'login'%}" />
+{% endif %} 
 <link rel="stylesheet" type="text/css" href="{% static 'hunts/style.css' %}">
 
 {% block title %}Hunt {{hunt.0.huntname}} Big Board{% endblock %}

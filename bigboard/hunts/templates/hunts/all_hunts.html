@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
+{% if user.is_authenticated %}
+{% else %}
+     <meta http-equiv="refresh" content="0; url={% url 'login'%}" />
+{% endif %} 
 
 <link rel="stylesheet" type="text/css" href="{% static 'hunts/style.css' %}">
 
