@@ -4,8 +4,10 @@ from pprint import pprint
 from oauth2client import file, client, tools
 from googleapiclient.discovery import build
 from httplib2 import Http
+from apiclient import errors
+import settings
 
-TOKEN = 'NTI0OTk1MzY4ODc0NjcyMTQ5.Dv1arQ.sag2SagcVd1yif8iTZ-DsE-aiTo'
+TOKEN = settings.token #'NTI0OTk1MzY4ODc0NjcyMTQ5.Dv1arQ.sag2SagcVd1yif8iTZ-DsE-aiTo'
 SCOPES = ('https://www.googleapis.com/auth/spreadsheets','https://www.googleapis.com/auth/drive')
 store = file.Storage('token.json')
 creds = store.get()
@@ -18,7 +20,8 @@ client = discord.Client()
 
 SHAREDFOLDER = '1EPw1snH_ENgAQUCwKS9-qMtZDHwBFnCC' #Change as needed
 TAGLIST = ['stuck','backsolved','needshelp'] # Making this global so it only get changed in one place.
-TOOLSBASEURL = 'solver.tools'
+TOOLSBASEURL = settings.toolsbaseurl
+DBHOST = settings.dbhost
 
 @client.event
 async def on_message(message):
@@ -165,67 +168,19 @@ async def on_message(message):
         await client.send_message(message.channel, msg)
         try: #Create a google sheet
             print('Sheet Creation called!')
-            sheet_service = build('sheets', 'v4', credentials=creds)
-            spreadsheet_body = {}
-            request = sheet_service.spreadsheets().create(body=spreadsheet_body)
-            response = request.execute()
-            pprint(response)
-            spreadsheetid = response.get('spreadsheetId')
-            requests = []
-            requests.append({
-                'updateSpreadsheetProperties': {
-                    'properties': {
-                        'title': str(inputstr[1])
-                    },
-                    'fields': 'title'
-                }
-            })     
-            requests.append({ #Cut unnecessary rows
-                'deleteDimension': {
-                    'range': {
-                        'sheetId': 0,
-                        'dimension': 'ROWS',
-                        'startIndex': 60,
-                        'endIndex': 1000
-                    }
-                }
-            })
-            requests.append({ #Add columns
-                'insertDimension': {
-                    'range': {
-                        'sheetId': 0,
-                        'dimension': 'COLUMNS',
-                        'startIndex': 25,
-                        'endIndex': 50
-                    },
-                    'inheritFromBefore': bool(1)
-                }
-            })
-            
-            requests.append({ #Format right columns for crossword grid
-                'updateDimensionProperties': {
-                    'range': {
-                        'sheetId': 0,
-                        'dimension': 'COLUMNS',
-                        'startIndex': 7,
-                        'endIndex': 50
-                    },
-                    'properties': {
-                        'pixelSize': 20
-                    },
-                    'fields': 'pixelSize'
-                }
-            })
-            body = {
-                'requests': requests
-            }
-            response = sheet_service.spreadsheets().batchUpdate(
-                spreadsheetId=spreadsheetid,
-                body=body).execute()
+            drive_service = build('drive', 'v3', http=creds.authorize(Http())) #Using google drive instead of sheets.
+            copied_file = {'name': str(inputstr[1])}
+            response = drive_service.files().copy(
+                    fileId='12jxFviWNueQJH-d5HOxUujT9VV5fv8et9C1OZS3RxVo', body=copied_file).execute() #Copying from static template.
+            spreadsheetid = response.get('id')
+            print(response)
+            print(spreadsheetid)
+            msg = 'Created spreadsheet from template.'
+            await client.send_message(message.channel, msg)
         except:
             msg = 'ERROR: Google sheets creation failed.'
             await client.send_message(message.channel, msg)
-        try:  # Move the sheet to the shared folder.
+        if(1==1):  # Move the sheet to the shared folder.
             print('Move Sheet called!')
             folder_id = SHAREDFOLDER #Static definition above
             # Retrieve the existing parents to remove
@@ -238,7 +193,7 @@ async def on_message(message):
                                                 removeParents=previous_parents,
                                                 fields='id, parents').execute()
             msg = 'Created a google sheet for the puzzle.'
-        except:
+        if(1==0):
             msg = 'Google drive manipulation failed.'
         await client.send_message(message.channel, msg)
         try: #Put the sheet id into the database
@@ -452,7 +407,8 @@ async def on_message(message):
     if message.content.startswith('!help'): #Return list of valid tags.
         print('Help called!')
         msg = 'A list of commands is available at https://docs.google.com/document/d/1Ut3-qMI4dPRqRaf6HQ1efbgm3JisSzzhcrlhITRpEbw/'
-        await client.send_message(message.channel, msg)        
+        await client.send_message(message.channel, msg)
+        
 
 @client.event
 async def on_ready():
@@ -463,7 +419,7 @@ async def on_ready():
 
 mydb = mysql.connector.connect(
   auth_plugin="mysql_native_password",
-  host="localhost",
+  host=DBHOST,
   user="statusbot",
   passwd="statusbot.pass",
   database="bigboard",  
