@@ -10,6 +10,7 @@
 {% block title %}Hunt {{hunt.0.huntname}} Big Board{% endblock %}
 {% block content %}
     <h1>{{hunt.0.huntname}} Big Board</h1>
+    <p>{{newpuzz|length}} puzzle{{newpuzz|pluralize}} with no round linked at bottom.</p>
     
 <table class="hunt-round-table" columns=3>
 {% for prow in puzzles|columns:3 %}
@@ -38,6 +39,22 @@
     </tr>
  </table>
 {% endfor %}
+{# Now, add the unlinked puzzles. #}
+<hr>
+<p>Puzzle{{newpuzz|pluralize}} with no round:
+<table class="round-table">
+{% for n in newpuzz %}
+<div class="puzzle-unlinked"> 
+        <td><a href="{% url 'puzzle:puzzle' n.puzzid %}" title="{{n.puzzname}}">
+        <div class="puzzle-board color0">
+        <table class="puzzle-table columns=3">
+        <tr><td colspan=2 class="puzzle-name">{{ n.puzzname }}</td><td class="round-name"></td></tr>
+        <tr><td colspan=3 class="puzzle-answer"><b>???</b></tr>
+        </table>
+        </div>
+        </a></td>
+{% endfor %}
+        </table>
 {% endblock %}
 
 

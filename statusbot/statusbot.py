@@ -18,6 +18,7 @@ client = discord.Client()
 
 SHAREDFOLDER = '1EPw1snH_ENgAQUCwKS9-qMtZDHwBFnCC' #Change as needed
 TAGLIST = ['stuck','backsolved','needshelp'] # Making this global so it only get changed in one place.
+TOOLSBASEURL = 'solver.tools'
 
 @client.event
 async def on_message(message):
@@ -132,6 +133,7 @@ async def on_message(message):
     
     if message.content.startswith('!add_p '): #Add new puzzle.  
         print('Add Puzzle called!')
+        mycursor = mydb.cursor()
         inputstr = message.content.split(' ', 1) # Everything after the first command is considered part of the puzzle name
         puzzName = str(re.escape(str(inputstr[1]))) # Sanitize but otherwise keep
         chanName = str(re.sub('[^A-Za-z0-9]+', '', str(inputstr[1]))) # Strip spaces, non alphanumeric 
@@ -143,7 +145,10 @@ async def on_message(message):
             print('Failed to create %s') % (chanName)
         # NOTE: Somewhere here we have to change the group the channel lies in.
         print(chan.id)
-        cmd = 'INSERT INTO hunts_puzzle (puzzname, last_update, isMeta, active, huntid_id, url, discordchannelid, priority) VALUES (\'%s\', now(), 0, 1, 1, \'\', %d, 0);' % (puzzName, int(chan.id))            
+        mycursor.execute('SELECT huntid_id FROM hunts_puzzle WHERE discordchannelid = %s;' % int(message.channel.id))
+        res = mycursor.fetchall()
+        huntid = int(res[0][0])               
+        cmd = 'INSERT INTO hunts_puzzle (puzzname, last_update, isMeta, active, huntid_id, url, discordchannelid, priority) VALUES (\'%s\', now(), 0, 1, %d, \'\', %d, 0);' % (puzzName, huntid, int(chan.id))            
         try: # Set up the puzzle page in the database.
             mycursor = mydb.cursor()
             mycursor.execute(cmd)
@@ -244,6 +249,8 @@ async def on_message(message):
         except:
             msg = 'Google sheet insertion failed'
         await client.send_message(message.channel, msg)
+        msg = 'You can now view your new puzzle and change settings at http://%s/puzzle/%s' % (TOOLSBASEURL, puzzid)
+        await client.send_message(message.channel, msg)
         
 
     if message.content.startswith('!add_r '): #Add new round.  
@@ -258,8 +265,11 @@ async def on_message(message):
         except:
             print('Failed to create %s') % (chanName)
         # NOTE: Somewhere here we have to change the group the channel lies in.
-        print(chan.id)
-        cmd = 'INSERT INTO hunts_round (roundname, last_update, active, huntid_id, discordchannelid) VALUES (\'%s\', now(), 1, 1, %d);' % (roundName, int(chan.id))            
+        print(chan.id)        
+        mycursor.execute('SELECT huntid_id FROM hunts_puzzle WHERE discordchannelid = %s;' % int(message.channel.id))
+        res = mycursor.fetchall()
+        huntid = int(res[0][0])  
+        cmd = 'INSERT INTO hunts_round (roundname, last_update, active, huntid_id, discordchannelid) VALUES (\'%s\', now(), 1, %d, %d);' % (roundName, huntid, int(chan.id))            
         try: # Set up the puzzle page in the database.
             mycursor = mydb.cursor()
             mycursor.execute(cmd)
@@ -437,6 +447,12 @@ async def on_message(message):
     if message.content.startswith('!taglist'): #Return list of valid tags.
         print('Taglist called!')
         await client.send_message(message.channel, TAGLIST)
+
+
+    if message.content.startswith('!help'): #Return list of valid tags.
+        print('Help called!')
+        msg = 'A list of commands is available at https://docs.google.com/document/d/1Ut3-qMI4dPRqRaf6HQ1efbgm3JisSzzhcrlhITRpEbw/'
+        await client.send_message(message.channel, msg)        
 
 @client.event
 async def on_ready():

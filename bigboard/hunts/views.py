@@ -21,5 +21,6 @@ def hunt(request, huntid):
     print(roundlist)
     for r in roundlist:
         plist = Puzzle.objects.raw('SELECT puzzid, puzzname, hunts_puzzle.last_update, hunts_puzzle.isMeta, hunts_round.roundid, hunts_answer.answer, hunts_round.roundname FROM hunts_puzzle INNER JOIN hunts_puzzround ON hunts_puzzle.puzzid = hunts_puzzround.puzzid_id INNER JOIN hunts_round ON hunts_puzzround.roundid_id = hunts_round.roundid LEFT JOIN hunts_answer ON hunts_answer.puzzid_id = hunts_puzzle.puzzid WHERE hunts_round.huntid_id = %s AND hunts_round.active = 1 AND hunts_puzzle.active = 1 AND hunts_round.roundid = %s ORDER BY isMeta DESC, puzzname ASC;', [huntid, r.roundid])
-        puzzlist.append(plist)  
-    return render(request, 'hunts/base_hunt.html', {'rounds' : roundlist, 'puzzles' : puzzlist, 'hunt' : hunt})
+        puzzlist.append(plist)
+    unlinked = Puzzle.objects.raw('SELECT hp.puzzid, hp.puzzname FROM hunts_puzzle hp WHERE ((SELECT COUNT(*) FROM hunts_puzzround pr WHERE pr.puzzid_id = hp.puzzid) = 0) AND huntid_id = %s AND active = 1;', [huntid])
+    return render(request, 'hunts/base_hunt.html', {'rounds' : roundlist, 'puzzles' : puzzlist, 'hunt' : hunt, 'newpuzz' : unlinked})
