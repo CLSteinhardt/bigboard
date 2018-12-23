@@ -1,0 +1,46 @@
+{% extends "puzzle/base_puzzle.html" %}
+
+{% block title %}{{puzzdata.0.name}} Puzzle Page{% endblock %}
+
+{% block top %}
+
+{% if user.is_authenticated %}
+{% else %}
+     <meta http-equiv="refresh" content="0; url={% url 'login'%}" />
+{% endif %} 
+
+        {% if puzzdata.0.puzzname|length > 0 %} 
+        
+        <table><col width="40%"><col width="15%"><col width=40%">
+<tr><td><H3>{{puzzdata.0.puzzname}}</H3></td><td></td><td><a href="{{puzzdata.0.url}}">View {{puzzdata.0.puzzname}} puzzle page on the hunt website.</a></td></tr>
+<tr><td>Tags: {{taglist|length}}
+            {% for t in taglist %}
+            <div class="puzzle-board color1">{{t.tag}}</div>
+            {% endfor %}
+</td><td>Buttons go here.</td><td><a href="{% url 'hunts:hunt' puzzdata.0.huntid_id %}">{{puzzdata.0.huntname}} big board</a></td></tr>
+</tr>
+</table>
+        {% else %}           
+            <p>No puzzle with this id was found.</p>{{puzzdata.0.puzzname}}
+        {% endif %}    
+{% endblock %}
+
+{% block left %}
+<iframe src="https://titanembeds.com/embed/524929992363343883?defaultchannel={{puzzdata.0.discordchannelid}}" height="600" frameborder="0" style="width:100%"></iframe>
+{% endblock %}
+
+{% block middle %}
+{% if puzzdata.0.googlesheet|length > 1 %}
+<iframe src="https://docs.google.com/spreadsheets/d/{{puzzdata.0.googlesheet}}" height="600" frameborder="0" style="width:100%"></iframe>
+{% else %}
+No associated google sheet found!
+{% endif %}
+
+{% endblock %}
+
+{% block right %}
+<div class="puzzlepage-iframe">
+<iframe id="puzzlepage-iframe" src="{{puzzdata.0.url}}" style="position: absolute; height: 100%; width: 100%; border: none">
+      </iframe>
+      </div>
+{% endblock %}

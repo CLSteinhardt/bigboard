@@ -1,0 +1,195 @@
+div.hunt-active {
+    text-align: center;
+    background-color: green;
+    color: white;
+    min-width: 250px;
+    padding:3px 3px 3px 6px;
+    margin: 10px 0;
+    display:inline-block;
+    border-radius: 10px;
+}
+
+div.hunt-inactive {
+    text-align: center;
+    background-color: red;
+    color: black;
+    min-width: 250px;
+    padding:3px 3px 3px 6px;
+    margin: 10px 0;
+    display:inline-block;
+    border-radius: 10px;
+}
+
+div.puzzle-board {
+    text-align: center;
+    min-width: 100px;
+    padding:3px 3px 3px 6px;
+    margin: 10px 0;
+    display:inline-block;
+    border-radius: 10px;
+}
+
+div.puzzle-meta-board {
+    text-align: center;
+    min-width: 100px;
+    padding:3px 3px 3px 6px;
+    margin: 10px 0;
+    display:inline-block;
+    border-radius: 10px;
+}
+
+div.color0 {
+    background-color: chocolate;
+    color: black;
+}
+
+div.color1 {
+    background-color: chocolate;
+    color: black;
+}
+
+div.color2 {
+    background-color: teal;
+    color: white;
+}
+
+div.color3 {
+    background-color: gainsboro;
+    color: black;
+}
+
+div.color4 {
+    background-color: fuchsia;
+    color: black;
+}
+
+div.color5 {
+    background-color: tomato;
+    color: black;
+}
+
+div.color6 {
+    background-color: indianred;
+    color: black;
+}
+
+div.color7 {
+    background-color: goldenrod;
+    color: black;
+}
+
+div.color8 {
+    background-color: lightcyan;
+    color: black;
+}
+
+div.color9 {
+    background-color: indigo;
+    color: white;
+}
+
+div.puzzle
+
+li a {
+    color: black;
+    margin: 10px 0;
+}
+
+ul {
+list-style-type: none;
+}
+
+td.puzzle-name {
+    font-size: 7pt;
+    text-align: left;
+}
+
+td.round-name {
+    font-size: 9pt;
+    text-align: right;
+}
+
+td.puzzle-answer {
+    font-size: 15pt;
+    text-align: center;
+}
+
+table
+{
+    table-layout: fixed;
+    width: 100%;
+}
+
+table.hunt-round-table
+{
+    table-layout: fixed;
+    width:960px;
+    vertical-align: top;
+}
+
+table.round-table
+{
+    table-layout: fixed;
+    width:100%;
+    vertical-align: top;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+div.panelcontainer {
+  width: 100%;
+  height: 100%;
+}
+
+div.leftpanel {
+    width: 20%;
+    height: 100%;
+    float: left;
+    background-color: rosybrown;
+    border-collapse: collapse;
+}
+
+div.middlepanel {
+    width: 55%;
+    height: 100%;
+    float: left;
+    background-color: royalblud;
+    border-collapse: collapse;
+}
+
+div.rightpanel {
+  width: 25%;
+  height: 600px;
+  position: relative;
+  float: right;
+/*  background-color: yellow; */
+  border-collapse: collapse;
+}
+
+div.toppanel {
+  width: 100%;
+  height: 100px;
+  border-collapse: collapse;
+  background-color: #4da6ff;
+}
+
+iframe.googlesheet-iframe {
+    max-height: 200vh;
+    height:100%;
+}
+
+.puzzlepage-iframe {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    border: none;
+}
+
+div.puzzlepage-iframe {
+    width: 100%;
+    height: 100%;
+}

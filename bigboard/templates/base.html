@@ -1,0 +1,17 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'hunts/style.css' %}">
+<html lang="en">
+<head>
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    {% block content %}<h1>TTBNL Webtools</h1>{% endblock %}
+
+    {% block footer %}
+    <hr>
+    <p>[This is not a puzzle.]</p>
+    {% endblock %}
+</body>
+</html>

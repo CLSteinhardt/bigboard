@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+     
+<link rel="stylesheet" type="text/css" href="{% static 'hunts/style.css' %}">
+
+{% block title %}{% endblock %}
+{% block content %}
+
+<div class="container">
+  <div class="toppanel">{% block top %}<h1>Top Panel</h1>{% endblock %}</div>
+  <div class="leftpanel">
+   {% block left %}<h1>Left Panel</h1>{% endblock %}</div>
+  <div class="middlepanel">{% block middle %}<h1>Middle Panel</h1>{% endblock %}</div>
+  <div class="rightpanel">
+    {% block right %}<h1>Right Panel</h1>{% endblock %}</div>
+</div>
+  
+{% endblock %}
+
+
+
+ 
